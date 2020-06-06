@@ -110,8 +110,10 @@ SERCOM sercom3( SERCOM3 ) ;
 SERCOM sercom4( SERCOM4 ) ;
 SERCOM sercom5( SERCOM5 ) ;
 
+// if TRELLIS_M4_I2C_ENABLE is defined do not use Serial1
+#ifndef TRELLIS_M4_I2C_ENABLE
 Uart Serial1( &sercom4, PIN_SERIAL1_RX, PIN_SERIAL1_TX, PAD_SERIAL1_RX, PAD_SERIAL1_TX ) ;
-
+shit
 void SERCOM4_0_Handler()
 {
   Serial1.IrqHandler();
@@ -128,3 +130,4 @@ void SERCOM4_3_Handler()
 {
   Serial1.IrqHandler();
 }
+#endif

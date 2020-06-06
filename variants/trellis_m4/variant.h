@@ -19,6 +19,12 @@
 #ifndef _VARIANT_TRELLIS_M4_
 #define _VARIANT_TRELLIS_M4_
 
+// By default the trellis m4 has i2c slave functionality disabled
+// due to conflicts with Serial 1.
+// Uncomment the following define to enable i2c slave
+// Serial1 will be disabled
+// #define TRELLIS_M4_I2C_ENABLE 1
+
 // The definitions here needs a SAMD core >=1.6.10
 #define ARDUINO_SAMD_VARIANT_COMPLIANCE 10610
 
@@ -157,11 +163,19 @@ static const uint8_t SCK  = PIN_SPI_SCK ;
 #define PERIPH_WIRE          sercom4
 #define WIRE_IT_HANDLER      SERCOM4_Handler
 
-// Sercom interrupt handlers for I2C slave not set; they are used by Serial1
-// #define WIRE_IT_HANDLER_0    SERCOM4_0_Handler
-// #define WIRE_IT_HANDLER_1    SERCOM4_1_Handler
-// #define WIRE_IT_HANDLER_2    SERCOM4_2_Handler
-// #define WIRE_IT_HANDLER_3    SERCOM4_3_Handler
+// By default Sercom interrupt handlers for I2C slave not set; they are used by Serial1
+// define TRELLIS_M4_I2C_ENABLE in order to use i2c slave.
+#ifdef TRELLIS_M4_I2C_ENABLE
+  #define WIRE_IT_HANDLER_0    SERCOM4_0_Handler
+  #define WIRE_IT_HANDLER_1    SERCOM4_1_Handler
+  #define WIRE_IT_HANDLER_2    SERCOM4_2_Handler
+  #define WIRE_IT_HANDLER_3    SERCOM4_3_Handler
+#else
+  #define WIRE1_IT_HANDLER_0    SERCOM2_0_Handler
+  #define WIRE1_IT_HANDLER_1    SERCOM2_1_Handler
+  #define WIRE1_IT_HANDLER_2    SERCOM2_2_Handler
+  #define WIRE1_IT_HANDLER_3    SERCOM2_3_Handler
+#endif
 
 static const uint8_t SDA = PIN_WIRE_SDA;
 static const uint8_t SCL = PIN_WIRE_SCL;
@@ -171,10 +185,6 @@ static const uint8_t SCL = PIN_WIRE_SCL;
 #define PIN_WIRE1_SCL         (1u)
 #define PERIPH_WIRE1          sercom2
 #define WIRE1_IT_HANDLER      SERCOM2_Handler
-#define WIRE1_IT_HANDLER_0    SERCOM2_0_Handler
-#define WIRE1_IT_HANDLER_1    SERCOM2_1_Handler
-#define WIRE1_IT_HANDLER_2    SERCOM2_2_Handler
-#define WIRE1_IT_HANDLER_3    SERCOM2_3_Handler
 
 static const uint8_t SDA1 = PIN_WIRE_SDA;
 static const uint8_t SCL1 = PIN_WIRE_SCL;
